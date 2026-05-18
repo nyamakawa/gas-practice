@@ -10,6 +10,16 @@
 #-------------------------------
 # define system call macros
 # system call table: https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md#x86_64-64_bit
+#
+# AMD64 Linux Kernel Conventions:
+# https://www.ucw.cz/~hubicka/papers/abi/node33.html
+#
+#  1. User-level applications use as integer registers for passing the sequence %rdi, %rsi, %rdx, %rcx, %r8 and %r9. The kernel interface uses %rdi, %rsi, %rdx, %r10, %r8 and %r9.
+#  2. A system-call is done via the syscall instruction. The kernel destroys registers %rcx and %r11.
+#  3. The number of the syscall has to be passed in register %rax.
+#  4. System-calls are limited to six arguments, no argument is passed directly on the stack.
+#  5. Returning from the syscall, register %rax contains the result of the system-call. A value in the range between -4095 and -1 indicates an error, it is -errno.
+#  6. Only values of class INTEGER or class MEMORY are passed to the kernel.
 
 .macro syscall0 num
         mov     $\num, %rax
